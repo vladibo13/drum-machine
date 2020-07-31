@@ -1,6 +1,19 @@
 import React, { useState, useRef } from "react";
+import Button from "@material-ui/core/Button";
+import Grid from "@material-ui/core/Grid";
+import Slider from "@material-ui/core/Slider";
+import VolumeDown from "@material-ui/icons/VolumeDown";
+import VolumeUp from "@material-ui/icons/VolumeUp";
 import logo from "./logo.svg";
-import "./App.css";
+import { makeStyles } from "@material-ui/core/styles";
+import Paper from "@material-ui/core/Paper";
+import Container from "@material-ui/core/Container";
+import Switch from "@material-ui/core/Switch";
+import FormGroup from "@material-ui/core/FormGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Typography from "@material-ui/core/Typography";
+import Box from "@material-ui/core/Box";
+// import "./App.css";
 
 const keysBanks = [
   {
@@ -59,35 +72,116 @@ const keysBanks = [
   },
 ];
 
+const useStyles = makeStyles((theme) => ({
+  root: {
+    flexGrow: 1,
+    marginTop: "50px",
+  },
+  paper: {
+    padding: theme.spacing(3),
+    textAlign: "center",
+    color: theme.palette.text.secondary,
+  },
+}));
+
 function App() {
   const [keys, setKeys] = useState(keysBanks);
   const [display, setDisplay] = useState("");
   const [power, setPower] = useState(false);
-  const refHook = useRef(null);
-  const handleClick = ({ url, id }) => {
+  const classes = useStyles();
+  const [value, setValue] = useState(30);
+
+  const togglePower = () => {
+    setPower((prev) => !prev);
+  };
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+
+  const playSound = ({ url, id }) => {
     let sound = new Audio(url);
     sound.play();
     setDisplay(id);
   };
+
+  const handleKeyDown = (e, k) => {
+    console.log(e.keyCode);
+    const findKey = keysBanks.filter((k) => k.keyCode === e.keyCode);
+    if (findKey) {
+      let sound = new Audio(k.url);
+      sound.play();
+      setDisplay(k.id);
+    }
+  };
   return (
-    <div style={{ height: "100vh" }}>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          flex: 1,
-          cursor: "pointer",
-        }}
-      >
-        <h1>{display}</h1>
-        {keys.map((k) => (
-          <button disabled={power} onClick={() => handleClick(k)}>
-            {k.keyTrigger}
-          </button>
-        ))}
-      </div>
-    </div>
+    <Container classNAme={classes.root} maxWidth="sm">
+      <Typography component="div">
+        <Box fontWeight={100} textAlign="center" fontSize="h3.fontSize" m={1}>
+          Drum Machine
+        </Box>
+      </Typography>
+      <Grid mt={4} alignItems="center" justify="center" container spacing={4}>
+        <Grid item xs={4}>
+          <Paper className={classes.paper}>
+            <Grid container spacing={2}>
+              <Grid item>
+                <VolumeDown />
+              </Grid>
+              <Grid item xs>
+                <Slider
+                  value={value}
+                  onChange={handleChange}
+                  aria-labelledby="continuous-slider"
+                />
+              </Grid>
+              <Grid item>
+                <VolumeUp />
+              </Grid>
+            </Grid>
+          </Paper>
+        </Grid>
+        <Grid item xs={4}>
+          <Paper className={classes.paper}>
+            {display ? display : "No Sound"}
+          </Paper>
+        </Grid>
+        <Grid item xs={4}>
+          <Paper className={classes.paper}>
+            <FormGroup>
+              <FormControlLabel
+                control={
+                  <Switch
+                    color="primary"
+                    checked={power}
+                    onChange={togglePower}
+                  />
+                }
+                label="Mute"
+              />
+            </FormGroup>
+          </Paper>
+        </Grid>
+        {keys.map((k) => {
+          return (
+            <Grid item xs={4}>
+              <Paper className={classes.paper}>
+                <Button
+                  onClick={(e) => playSound(k)}
+                  color="primary"
+                  fullWidth={true}
+                  size="large"
+                  variant="contained"
+                  disabled={power}
+                >
+                  {k.keyTrigger}
+                </Button>
+              </Paper>
+            </Grid>
+          );
+        })}
+      </Grid>
+    </Container>
   );
 }
 
@@ -121,3 +215,25 @@ export default App;
 //     </div>
 //   </div>
 // );
+{
+  /* <div style={{ border: "1px solid black", height: "100vh" }}>
+<div
+  style={{
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    flexWrap: "wrap",
+    cursor: "pointer",
+    maxWidth: "70%",
+    marginLeft: "15%",
+  }}
+>
+  <h1>{display}</h1>
+  {keys.map((k) => (
+    <button style={{}} disabled={power} onClick={() => handleClick(k)}>
+      {k.keyTrigger}
+    </button>
+  ))}
+</div>
+</div> */
+}
