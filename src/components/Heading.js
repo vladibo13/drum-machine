@@ -5,7 +5,13 @@ import Box from "@material-ui/core/Box";
 const Heading = ({ text }) => {
   return (
     <Typography component="div">
-      <Box fontWeight={100} textAlign="center" fontSize="h3.fontSize" m={1}>
+      <Box
+        letterSpacing={10}
+        fontWeight={100}
+        textAlign="center"
+        fontSize="h3.fontSize"
+        mb={1}
+      >
         {text}
       </Box>
     </Typography>

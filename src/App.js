@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
@@ -21,8 +21,9 @@ const App = ({ drumSet, pianoSet }) => {
   const [keys, setKeys] = useState(drumSet);
   const [display, setDisplay] = useState("");
   const [power, setPower] = useState(false);
-  const classes = useStyles();
   const [volume, setVolume] = useState(30);
+
+  const classes = useStyles();
 
   const togglePower = () => {
     setPower((prev) => !prev);
@@ -33,11 +34,7 @@ const App = ({ drumSet, pianoSet }) => {
   };
 
   const playSound = ({ url, id }) => {
-    const sound = new Audio(url);
-    sound.volume = volume / 100;
-    console.log(volume);
-    sound.play();
-    setDisplay(id);
+    playDrum(url, id);
   };
 
   const setPiano = () => {
@@ -49,9 +46,34 @@ const App = ({ drumSet, pianoSet }) => {
     setKeys(drumSet);
     setDisplay("Drum Set");
   };
+  const keyFunction = useCallback((e) => {
+    console.log(e.keyCode);
+    const findKey = keys.filter((k) => e.keyCode === k.keyCode);
+    console.log(findKey);
+    if (findKey.length) {
+      const [keyEvent] = findKey;
+      playDrum(keyEvent.url, keyEvent.id);
+    }
+  }, []);
+
+  const playDrum = (url, id) => {
+    const sound = new Audio(url);
+    sound.volume = volume / 100;
+    console.log("Volume = ", volume);
+    sound.play();
+    setDisplay(id);
+  };
+
+  useEffect(() => {
+    document.addEventListener("keydown", keyFunction, false);
+
+    return () => {
+      document.removeEventListener("keydown", keyFunction, false);
+    };
+  }, []);
 
   return (
-    <Container classNAme={classes.root} maxWidth="sm">
+    <Container maxWidth="sm">
       <Heading text="Drum Machine" />
       <Grid container spacing={4}>
         <VolumeController
