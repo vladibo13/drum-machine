@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
-const bankOne = [
+const drumSet = [
   {
     keyCode: 81,
     keyTrigger: "Q",
@@ -60,7 +60,7 @@ const bankOne = [
   },
 ];
 
-const bankTwo = [
+const pianoSet = [
   {
     keyCode: 81,
     keyTrigger: "Q",
@@ -119,7 +119,7 @@ const bankTwo = [
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <App drumSet={drumSet} pianoSet={pianoSet} />
   </React.StrictMode>,
   document.getElementById("root")
 );

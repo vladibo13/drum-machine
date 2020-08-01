@@ -10,3 +10,7 @@ button {
   padding: 10px;
   cursor: pointer;
 }
+
+body {
+  font-family: "Roboto", sans-serif;
+}
