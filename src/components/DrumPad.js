@@ -7,7 +7,7 @@ const DrumPad = ({ keys, classes, playSound, power }) => {
     <>
       {keys.map((k) => {
         return (
-          <Grid item sm={4} xs={6}>
+          <Grid key={k.id} item sm={4} xs={6}>
             <Pad classes={classes} playSound={playSound} k={k} power={power} />
           </Grid>
         );

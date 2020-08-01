@@ -21,7 +21,25 @@ const App = ({ drumSet, pianoSet }) => {
   const [keys, setKeys] = useState(drumSet);
   const [display, setDisplay] = useState("");
   const [power, setPower] = useState(false);
-  const [volume, setVolume] = useState(30);
+  const [volume, setVolume] = useState(50);
+
+  useEffect(() => {
+    document.addEventListener("keydown", keyFunction, false);
+
+    return () => {
+      document.removeEventListener("keydown", keyFunction, false);
+    };
+  }, []);
+
+  const keyFunction = useCallback((e) => {
+    console.log(e.keyCode);
+    const findKey = keys.filter((k) => e.keyCode === k.keyCode);
+    console.log(findKey);
+    if (findKey.length) {
+      const [keyEvent] = findKey;
+      playDrum(keyEvent.url, keyEvent.id);
+    }
+  }, []);
 
   const classes = useStyles();
 
@@ -46,15 +64,6 @@ const App = ({ drumSet, pianoSet }) => {
     setKeys(drumSet);
     setDisplay("Drum Set");
   };
-  const keyFunction = useCallback((e) => {
-    console.log(e.keyCode);
-    const findKey = keys.filter((k) => e.keyCode === k.keyCode);
-    console.log(findKey);
-    if (findKey.length) {
-      const [keyEvent] = findKey;
-      playDrum(keyEvent.url, keyEvent.id);
-    }
-  }, []);
 
   const playDrum = (url, id) => {
     const sound = new Audio(url);
@@ -63,14 +72,6 @@ const App = ({ drumSet, pianoSet }) => {
     sound.play();
     setDisplay(id);
   };
-
-  useEffect(() => {
-    document.addEventListener("keydown", keyFunction, false);
-
-    return () => {
-      document.removeEventListener("keydown", keyFunction, false);
-    };
-  }, []);
 
   return (
     <Container maxWidth="sm">
